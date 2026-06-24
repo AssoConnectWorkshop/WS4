@@ -6,7 +6,7 @@ export default function Home() {
     <main className="flex min-h-screen flex-col items-center justify-center gap-10 p-8 bg-gradient-to-b from-pink-50 to-blue-50">
       <div className="flex flex-col items-center gap-4 text-center">
         <Image src="/mascot.png" alt="Mascot" width={140} height={140} priority />
-        <h1 className="text-4xl font-bold text-gray-800">Choisissez votre prénom !</h1>
+        <h1 className="text-4xl font-bold text-gray-800">Bienvenue, quel prénom vous voulez ?</h1>
         <p className="text-gray-500 max-w-sm">
           Likez ou passez des prénoms, retrouvez vos favoris et trouvez le parfait prénom pour votre enfant.
         </p>
