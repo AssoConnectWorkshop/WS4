@@ -1,3 +1,8 @@
+create table if not exists prenoms (
+  id   bigint generated always as identity primary key,
+  nom  text not null
+);
+
 alter table prenoms add column if not exists genre text check (genre in ('M', 'F', 'M/F'));
 
 -- Update existing rows
