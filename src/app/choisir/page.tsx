@@ -1,7 +1,7 @@
 'use client'
 
-import { useEffect, useState, useCallback } from 'react'
-import { useSearchParams, useRouter } from 'next/navigation'
+import { Suspense, useEffect, useState, useCallback } from 'react'
+import { useSearchParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import Link from 'next/link'
 
@@ -31,9 +31,8 @@ function saveFavori(nom: string) {
   }
 }
 
-export default function ChoisirPage() {
+function ChoisirInner() {
   const searchParams = useSearchParams()
-  const router = useRouter()
   const genre = searchParams.get('genre')
 
   const [prenoms, setPrenoms] = useState<Prenom[]>([])
@@ -56,7 +55,7 @@ export default function ChoisirPage() {
   }, [genre])
 
   const current = prenoms[index]
-  const done = index >= prenoms.length
+  const done = index >= prenoms.length && !loading
 
   const handleLike = useCallback(() => {
     if (!current || animate) return
@@ -105,7 +104,6 @@ export default function ChoisirPage() {
 
   return (
     <main className={`flex min-h-screen flex-col items-center justify-between p-6 bg-gradient-to-b ${bgGradient}`}>
-      {/* Header */}
       <div className="w-full max-w-sm flex items-center justify-between">
         <Link href="/" className="text-gray-500 hover:text-gray-700 transition-colors">
           ← Retour
@@ -116,13 +114,12 @@ export default function ChoisirPage() {
         </Link>
       </div>
 
-      {/* Card area */}
       <div className="flex flex-col items-center gap-6 flex-1 justify-center w-full max-w-sm">
         {loading && (
           <div className="text-gray-400 text-lg">Chargement…</div>
         )}
 
-        {!loading && done && (
+        {done && (
           <div className="flex flex-col items-center gap-6 text-center">
             <div className="text-6xl">🎉</div>
             <h2 className="text-2xl font-bold text-gray-800">C&apos;est tout !</h2>
@@ -144,7 +141,6 @@ export default function ChoisirPage() {
 
         {!loading && !done && current && (
           <>
-            {/* Progress */}
             <div className="w-full bg-gray-200 rounded-full h-1.5">
               <div
                 className="h-1.5 rounded-full bg-gradient-to-r from-pink-400 to-purple-400 transition-all"
@@ -153,7 +149,6 @@ export default function ChoisirPage() {
             </div>
             <p className="text-xs text-gray-400">{index} / {prenoms.length}</p>
 
-            {/* Name card */}
             <div
               className={`
                 relative w-64 h-80 rounded-3xl shadow-xl flex flex-col items-center justify-center
@@ -177,7 +172,6 @@ export default function ChoisirPage() {
               )}
             </div>
 
-            {/* Buttons */}
             <div className="flex gap-8 items-center">
               <button
                 onClick={handleSkip}
@@ -202,5 +196,13 @@ export default function ChoisirPage() {
 
       <div className="h-6" />
     </main>
+  )
+}
+
+export default function ChoisirPage() {
+  return (
+    <Suspense fallback={<div className="flex min-h-screen items-center justify-center text-gray-400">Chargement…</div>}>
+      <ChoisirInner />
+    </Suspense>
   )
 }
